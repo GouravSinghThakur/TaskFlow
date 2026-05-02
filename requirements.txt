@@ -5,7 +5,7 @@ uvicorn[standard]==0.34.0
 # ── Database ────────────────────────────────────────────────────────────────
 sqlalchemy==2.0.38
 # For PostgreSQL on Railway, also add:
-#   psycopg2-binary==2.9.10
+psycopg2-binary==2.9.10
 
 # ── Authentication & security ───────────────────────────────────────────────
 passlib[bcrypt]==1.7.4
