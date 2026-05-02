@@ -81,7 +81,11 @@ def list_projects(
         from app.crud.project import get_projects_by_creator
         projects, total = get_projects_by_creator(db, current_user.id, skip=skip, limit=limit)
     else:
-        projects, total = get_all_projects(db, skip=skip, limit=limit)
+        if current_user.role == "admin":
+            projects, total = get_all_projects(db, skip=skip, limit=limit)
+        else:
+            from app.crud.project import get_projects_by_assigned_user
+            projects, total = get_projects_by_assigned_user(db, current_user.id, skip=skip, limit=limit)
 
     return ProjectListResponse(
         total=total,

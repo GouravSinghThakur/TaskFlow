@@ -40,6 +40,7 @@ def get_tasks_by_project(
     limit: int = 100,
     status_filter: Optional[TaskStatus] = None,
     priority_filter: Optional[TaskPriority] = None,
+    assignee_filter: Optional[int] = None,
 ) -> tuple[list[Task], int]:
     query = _base_query(db).filter(Task.project_id == project_id)
 
@@ -47,6 +48,8 @@ def get_tasks_by_project(
         query = query.filter(Task.status == status_filter)
     if priority_filter is not None:
         query = query.filter(Task.priority == priority_filter)
+    if assignee_filter is not None:
+        query = query.filter(Task.assigned_to == assignee_filter)
 
     total = query.count()
     tasks = (

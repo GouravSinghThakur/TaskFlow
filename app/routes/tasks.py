@@ -122,8 +122,12 @@ def list_project_tasks(
         default=None, alias="priority", description="Filter by task priority."
     ),
 ) -> TaskListResponse:
-    _get_project_or_404(db, project_id)
+    project = _get_project_or_404(db, project_id)
     _require_member(db, project_id, current_user)
+
+    assignee_filter = None
+    if current_user.role != "admin" and project.created_by != current_user.id:
+        assignee_filter = current_user.id
 
     tasks, total = get_tasks_by_project(
         db,
@@ -132,6 +136,7 @@ def list_project_tasks(
         limit=limit,
         status_filter=status_filter,
         priority_filter=priority_filter,
+        assignee_filter=assignee_filter,
     )
     return TaskListResponse(
         total=total,
@@ -172,6 +177,14 @@ def get_task(
 ) -> TaskResponse:
     task = _get_task_or_404(db, task_id)
     _require_member(db, task.project_id, current_user)
+    
+    if current_user.role != "admin" and task.project.created_by != current_user.id:
+        if task.assigned_to != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only view tasks assigned to you.",
+            )
+            
     return TaskResponse.from_orm_full(task)
 
 @router.patch(

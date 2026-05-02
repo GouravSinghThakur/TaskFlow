@@ -47,6 +47,29 @@ def get_projects_by_creator(
     )
     return projects, total
 
+def get_projects_by_assigned_user(
+    db: Session,
+    user_id: int,
+    skip: int = 0,
+    limit: int = 100,
+) -> tuple[list[Project], int]:
+    from app.models.task import Task
+    query = (
+        db.query(Project)
+        .options(joinedload(Project.created_by_user))
+        .join(Task, Task.project_id == Project.id)
+        .filter(Task.assigned_to == user_id)
+        .distinct()
+    )
+    total = query.count()
+    projects = (
+        query.order_by(Project.created_at.desc())
+        .offset(skip)
+        .limit(min(limit, 100))
+        .all()
+    )
+    return projects, total
+
 def create_project(
     db: Session,
     name: str,
