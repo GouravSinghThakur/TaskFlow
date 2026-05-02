@@ -1,0 +1,180 @@
+<html><head><meta charset='utf-8'></head><body><div align="center">
+  <h1>🚀 TaskFlow</h1>
+  <p><b>A Production-Ready Team & Task Management REST API</b></p>
+
+  <!-- Badges -->
+  <img src="https://img.shields.io/badge/Python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white" alt="SQLAlchemy" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Railway" />
+</div>
+
+<p><br /></p>
+<blockquote>
+<p><strong>TaskFlow</strong> is a comprehensive, full-stack task management platform designed to demonstrate best practices in backend API design. Built with <strong>FastAPI</strong> and <strong>SQLAlchemy</strong>, it features a secure JWT authentication system, strict Role-Based Access Control (RBAC), and a responsive web interface powered by Jinja2 and Tailwind CSS.</p>
+</blockquote>
+<hr />
+<h2>🌟 Key Technical Achievements</h2>
+<ul>
+<li><strong>Advanced Security &amp; Authentication</strong>: Implemented enterprise-grade security using <code>passlib</code> bcrypt hashing and <code>python-jose</code> for state-less JWT (JSON Web Token) authentication.</li>
+<li><strong>Role-Based Access Control (RBAC)</strong>: Developed a tiered permission system utilizing FastAPI dependency injection. Admins can manage projects and users, while members are restricted to specific task-level interactions.</li>
+<li><strong>Optimized Database Aggregations</strong>: Designed complex SQL queries (via SQLAlchemy) to compute real-time user statistics and dashboard metrics at the database level, avoiding costly Python loops.</li>
+<li><strong>Production-Ready Deployment</strong>: Configured for seamless deployment on Railway, utilizing a robust PostgreSQL database, environment variable management, and WSGI/ASGI configurations via Uvicorn.</li>
+<li><strong>Clean Architecture</strong>: Strictly adheres to MVC/layered architecture separating routes, CRUD operations, database models, and Pydantic schemas.</li>
+</ul>
+<hr />
+<h2>🏗️ Tech Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Technologies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Backend Framework</strong></td>
+<td>FastAPI, Uvicorn</td>
+</tr>
+<tr>
+<td><strong>Database &amp; ORM</strong></td>
+<td>PostgreSQL (Prod), SQLite (Dev), SQLAlchemy 2.0</td>
+</tr>
+<tr>
+<td><strong>Data Validation</strong></td>
+<td>Pydantic v2</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>JWT Tokens, Bcrypt</td>
+</tr>
+<tr>
+<td><strong>Frontend UI</strong></td>
+<td>HTML5, Jinja2 Templates, Tailwind CSS</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Railway, Git</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>📁 Project Architecture</h2>
+<p>The codebase follows a modular structure designed for scalability:</p>
+<pre><code class="language-text">app/
+├── core/         # Core settings, security logic, and RBAC dependencies
+├── crud/         # Database query logic (Separation of Concerns)
+├── db/           # Database session management and base models
+├── models/       # SQLAlchemy ORM definitions (User, Project, Task)
+├── routes/       # FastAPI endpoints categorized by domain
+├── schemas/      # Pydantic models for request/response validation
+├── templates/    # Frontend UI (Jinja2 + TailwindCSS)
+└── main.py       # Application factory
+</code></pre>
+<hr />
+<h2>🔐 Role-Based Access Control (RBAC) Overview</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th style="text-align: center;">Admin</th>
+<th style="text-align: center;">Member</th>
+<th style="text-align: center;">Assignee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create/Delete Projects</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td>Create/Delete Tasks</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td>View Assigned Projects/Tasks</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Update All Task Details</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td>Update Task Status Only</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Manage User Roles</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">-</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>🚀 Quick Start (Local Development)</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Python 3.11+</li>
+<li>Git</li>
+</ul>
+<h3>1. Clone &amp; Setup</h3>
+<pre><code class="language-bash">git clone https://github.com/GouravSinghThakur/TaskFlow.git
+cd TaskFlow
+
+# Create and activate virtual environment
+python -m venv .venv
+source .venv/Scripts/activate  # Windows
+# source .venv/bin/activate    # Mac/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+</code></pre>
+<h3>2. Configure Environment</h3>
+<pre><code class="language-bash">cp .env.example .env
+</code></pre>
+<p>Open <code>.env</code> and configure your <code>SECRET_KEY</code>. You can generate a secure key using:</p>
+<pre><code class="language-bash">python -c &quot;import secrets; print(secrets.token_hex(32))&quot;
+</code></pre>
+<h3>3. Run the Application</h3>
+<pre><code class="language-bash">python run.py
+</code></pre>
+<ul>
+<li><strong>Web UI</strong>: <code>http://localhost:8000/ui/login</code></li>
+<li><strong>Interactive API Docs (Swagger)</strong>: <code>http://localhost:8000/docs</code></li>
+</ul>
+<hr />
+<h2>🌐 Live Deployment (Railway)</h2>
+<p>This application is fully configured for deployment on Railway.</p>
+<ol>
+<li>Connect your GitHub repository to a new Railway project.</li>
+<li>Provision a <strong>PostgreSQL</strong> database service.</li>
+<li>Add the required Environment Variables in Railway (<code>SECRET_KEY</code>, <code>ALGORITHM=HS256</code>).</li>
+<li>Railway will automatically detect the <code>Procfile</code> and <code>requirements.txt</code> to build and serve the app via Uvicorn.</li>
+</ol>
+<hr />
+<h2>📡 API Reference Snapshot</h2>
+<p>The API includes fully documented OpenAPI schemas (accessible at <code>/docs</code> when running).</p>
+<ul>
+<li><strong><code>POST /api/auth/signup</code></strong>: Register new users</li>
+<li><strong><code>POST /api/auth/login</code></strong>: Authenticate and retrieve JWT</li>
+<li><strong><code>POST /api/projects</code></strong>: Create new team projects</li>
+<li><strong><code>PATCH /api/tasks/{id}</code></strong>: Update task statuses</li>
+<li><strong><code>GET /api/dashboard</code></strong>: Fetch real-time aggregated project/task metrics</li>
+</ul>
+<hr />
+<div align="center">
+  <i>Developed by Gourav Singh Thakur</i>
+</div></body></html>
