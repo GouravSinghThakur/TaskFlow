@@ -120,7 +120,7 @@
           <span class="text-2xl">✅</span>
           <span class="text-xs font-medium text-slate-700">My Tasks</span>
         </a>
-        <a href="/docs"
+        <a id="dash-apidocs" href="/docs" style="display: none;"
            class="flex flex-col items-center justify-center gap-1 p-4 rounded-lg bg-slate-50
                   hover:bg-brand/5 border border-slate-200 hover:border-brand/30 transition text-center">
           <span class="text-2xl">📖</span>
@@ -161,6 +161,8 @@
 
     if (role === 'admin') {
       document.getElementById('btn-new-project').classList.remove('hidden');
+      const dashApidocs = document.getElementById('dash-apidocs');
+      if (dashApidocs) dashApidocs.style.display = 'flex';
     }
 
     try {
