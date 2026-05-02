@@ -48,8 +48,9 @@ class DashboardStats(BaseModel):
 
     completion_rate_pct: float    # % of tasks DONE out of total_tasks_in_my_projects
 
-def _query_dashboard(db: Session, user_id: int) -> DashboardStats:
+def _query_dashboard(db: Session, user: User) -> DashboardStats:
     now = datetime.now(timezone.utc)
+    user_id = user.id
 
     projects_as_admin: int = (
         db.query(func.count(Project.id))
@@ -67,41 +68,51 @@ def _query_dashboard(db: Session, user_id: int) -> DashboardStats:
         .scalar() or 0
     )
 
-    admin_task_agg = (
-        db.query(
-            func.count(Task.id).label("total"),
-            func.sum(
-                case((Task.status == TaskStatus.TODO, 1), else_=0)
-            ).label("todo"),
-            func.sum(
-                case((Task.status == TaskStatus.IN_PROGRESS, 1), else_=0)
-            ).label("in_progress"),
-            func.sum(
-                case((Task.status == TaskStatus.DONE, 1), else_=0)
-            ).label("done"),
-            func.sum(
-                case((Task.priority == TaskPriority.LOW, 1), else_=0)
-            ).label("low"),
-            func.sum(
-                case((Task.priority == TaskPriority.MEDIUM, 1), else_=0)
-            ).label("medium"),
-            func.sum(
-                case((Task.priority == TaskPriority.HIGH, 1), else_=0)
-            ).label("high"),
-            func.sum(
-                case(
-                    (
-                        (Task.due_date < now) & (Task.status != TaskStatus.DONE),
-                        1,
-                    ),
-                    else_=0,
-                )
-            ).label("overdue"),
-        )
-        .join(Project, Project.id == Task.project_id)
-        .filter(Project.created_by == user_id)
-        .one()
+    task_agg_query = db.query(
+        func.count(Task.id).label("total"),
+        func.sum(
+            case((Task.status == TaskStatus.TODO, 1), else_=0)
+        ).label("todo"),
+        func.sum(
+            case((Task.status == TaskStatus.IN_PROGRESS, 1), else_=0)
+        ).label("in_progress"),
+        func.sum(
+            case((Task.status == TaskStatus.DONE, 1), else_=0)
+        ).label("done"),
+        func.sum(
+            case((Task.priority == TaskPriority.LOW, 1), else_=0)
+        ).label("low"),
+        func.sum(
+            case((Task.priority == TaskPriority.MEDIUM, 1), else_=0)
+        ).label("medium"),
+        func.sum(
+            case((Task.priority == TaskPriority.HIGH, 1), else_=0)
+        ).label("high"),
+        func.sum(
+            case(
+                (
+                    (Task.due_date < now) & (Task.status != TaskStatus.DONE),
+                    1,
+                ),
+                else_=0,
+            )
+        ).label("overdue"),
     )
+
+    from app.models.user import UserRole
+    if user.role == UserRole.ADMIN:
+        admin_task_agg = (
+            task_agg_query
+            .join(Project, Project.id == Task.project_id)
+            .filter(Project.created_by == user_id)
+            .one()
+        )
+    else:
+        admin_task_agg = (
+            task_agg_query
+            .filter(Task.assigned_to == user_id)
+            .one()
+        )
 
     total_tasks      = int(admin_task_agg.total      or 0)
     todo_count       = int(admin_task_agg.todo       or 0)
@@ -183,6 +194,6 @@ def get_dashboard(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> DashboardStats:
-    stats = _query_dashboard(db, current_user.id)
+    stats = _query_dashboard(db, current_user)
     stats.user_name = current_user.name
     return stats

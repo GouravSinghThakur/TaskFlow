@@ -24,7 +24,7 @@
   
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Projects (admin)</p>
+      <p id="s-admin-title" class="text-xs font-medium text-slate-500 uppercase tracking-wide">Projects (admin)</p>
       <p id="s-admin"  class="text-3xl font-bold text-brand mt-1">—</p>
     </div>
     <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
@@ -168,10 +168,22 @@
     try {
       const d = await api('GET', '/api/dashboard');
       document.getElementById('welcome-msg').textContent = `Welcome back, ${d.user_name} 👋`;
-      document.getElementById('s-admin').textContent  = d.projects_as_admin;
-      document.getElementById('s-total').textContent  = d.total_tasks_in_my_projects;
-      document.getElementById('s-overdue').textContent = d.overdue_tasks;
-      document.getElementById('s-pct').textContent    = d.completion_rate_pct + '%';
+      if (role === 'admin') {
+        document.getElementById('s-admin-title').textContent = 'Projects (admin)';
+        document.getElementById('s-admin').textContent  = d.projects_as_admin;
+        document.getElementById('s-total').textContent  = d.total_tasks_in_my_projects;
+        document.getElementById('s-overdue').textContent = d.overdue_tasks;
+        document.getElementById('s-pct').textContent    = d.completion_rate_pct + '%';
+      } else {
+        document.getElementById('s-admin-title').textContent = 'Assigned Projects';
+        document.getElementById('s-admin').textContent  = d.projects_as_member;
+        document.getElementById('s-total').textContent  = d.assigned_to_me.total;
+        document.getElementById('s-overdue').textContent = d.assigned_to_me.overdue;
+        const completion = d.assigned_to_me.total > 0 
+           ? Math.round((d.assigned_to_me.done / d.assigned_to_me.total) * 100) 
+           : 0;
+        document.getElementById('s-pct').textContent    = completion + '%';
+      }
       document.getElementById('s-todo').textContent   = d.tasks_by_status.todo;
       document.getElementById('s-ip').textContent     = d.tasks_by_status.in_progress;
       document.getElementById('s-done').textContent   = d.tasks_by_status.done;
