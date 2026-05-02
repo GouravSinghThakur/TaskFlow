@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TaskFlow{% endblock %}
+
+{% block content %}
+<div id="page" class="fade-in">
+
+  
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <div class="flex items-center gap-3 mb-1">
+        <h1 class="text-2xl font-bold text-slate-800">Dashboard</h1>
+        
+        <span id="role-badge" class="hidden px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide"></span>
+      </div>
+      <p id="welcome-msg" class="text-slate-500 text-sm">Loading your stats…</p>
+    </div>
+    
+    <a id="btn-new-project" href="/ui/projects"
+       class="hidden bg-brand hover:bg-brand-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition">
+      + New Project
+    </a>
+  </div>
+
+  
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Projects (admin)</p>
+      <p id="s-admin"  class="text-3xl font-bold text-brand mt-1">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Total Tasks</p>
+      <p id="s-total"  class="text-3xl font-bold text-slate-800 mt-1">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Overdue</p>
+      <p id="s-overdue" class="text-3xl font-bold text-red-500 mt-1">—</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+      <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Completion</p>
+      <p id="s-pct"   class="text-3xl font-bold text-emerald-500 mt-1">—</p>
+    </div>
+  </div>
+
+  
+  <div class="grid md:grid-cols-2 gap-6">
+
+    
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Tasks by status</h2>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>To Do</span>
+          <span id="s-todo" class="font-semibold text-slate-800">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>In Progress</span>
+          <span id="s-ip" class="font-semibold text-slate-800">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>Done</span>
+          <span id="s-done" class="font-semibold text-slate-800">—</span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Assigned to me</h2>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-600">Total assigned</span>
+          <span id="a-total" class="font-semibold text-slate-800">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-600">In progress</span>
+          <span id="a-ip" class="font-semibold text-blue-600">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-600">Overdue</span>
+          <span id="a-overdue" class="font-semibold text-red-500">—</span>
+        </div>
+      </div>
+      <a href="/ui/tasks" class="mt-5 inline-block text-xs text-brand hover:underline font-medium">
+        View my tasks →
+      </a>
+    </div>
+
+    
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Tasks by priority</h2>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 text-xs rounded bg-red-100 text-red-700 font-medium">High</span></span>
+          <span id="p-high" class="font-semibold text-slate-800">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 text-xs rounded bg-amber-100 text-amber-700 font-medium">Medium</span></span>
+          <span id="p-med" class="font-semibold text-slate-800">—</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 text-xs rounded bg-slate-100 text-slate-600 font-medium">Low</span></span>
+          <span id="p-low" class="font-semibold text-slate-800">—</span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-slate-700 mb-4 uppercase tracking-wide">Quick links</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <a href="/ui/projects"
+           class="flex flex-col items-center justify-center gap-1 p-4 rounded-lg bg-slate-50
+                  hover:bg-brand/5 border border-slate-200 hover:border-brand/30 transition text-center">
+          <span class="text-2xl">📁</span>
+          <span class="text-xs font-medium text-slate-700">Projects</span>
+        </a>
+        <a href="/ui/tasks"
+           class="flex flex-col items-center justify-center gap-1 p-4 rounded-lg bg-slate-50
+                  hover:bg-brand/5 border border-slate-200 hover:border-brand/30 transition text-center">
+          <span class="text-2xl">✅</span>
+          <span class="text-xs font-medium text-slate-700">My Tasks</span>
+        </a>
+        <a href="/docs"
+           class="flex flex-col items-center justify-center gap-1 p-4 rounded-lg bg-slate-50
+                  hover:bg-brand/5 border border-slate-200 hover:border-brand/30 transition text-center">
+          <span class="text-2xl">📖</span>
+          <span class="text-xs font-medium text-slate-700">API Docs</span>
+        </a>
+        <a href="/ui/projects"
+           class="flex flex-col items-center justify-center gap-1 p-4 rounded-lg bg-brand/5
+                  hover:bg-brand/10 border border-brand/20 transition text-center">
+          <span class="text-2xl">➕</span>
+          <span class="text-xs font-medium text-brand">New Project</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  if (!requireAuth()) { /* redirected */ }
+
+  async function loadDashboard() {
+
+    await refreshUser();
+    const user = getUser();
+    const role = (user?.role || 'member').toLowerCase();
+
+    const badge = document.getElementById('role-badge');
+    if (role === 'admin') {
+      badge.textContent = 'Admin';
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide bg-violet-100 text-violet-700 border border-violet-200';
+    } else {
+      badge.textContent = 'Member';
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide bg-slate-100 text-slate-500 border border-slate-200';
+    }
+    badge.classList.remove('hidden');
+
+    if (role === 'admin') {
+      document.getElementById('btn-new-project').classList.remove('hidden');
+    }
+
+    try {
+      const d = await api('GET', '/api/dashboard');
+      document.getElementById('welcome-msg').textContent = `Welcome back, ${d.user_name} 👋`;
+      document.getElementById('s-admin').textContent  = d.projects_as_admin;
+      document.getElementById('s-total').textContent  = d.total_tasks_in_my_projects;
+      document.getElementById('s-overdue').textContent = d.overdue_tasks;
+      document.getElementById('s-pct').textContent    = d.completion_rate_pct + '%';
+      document.getElementById('s-todo').textContent   = d.tasks_by_status.todo;
+      document.getElementById('s-ip').textContent     = d.tasks_by_status.in_progress;
+      document.getElementById('s-done').textContent   = d.tasks_by_status.done;
+      document.getElementById('p-high').textContent   = d.tasks_by_priority.high;
+      document.getElementById('p-med').textContent    = d.tasks_by_priority.medium;
+      document.getElementById('p-low').textContent    = d.tasks_by_priority.low;
+      document.getElementById('a-total').textContent  = d.assigned_to_me.total;
+      document.getElementById('a-ip').textContent     = d.assigned_to_me.in_progress;
+      document.getElementById('a-overdue').textContent= d.assigned_to_me.overdue;
+    } catch (err) {
+      if (err.message.includes('401') || err.message.toLowerCase().includes('not authenticated')) {
+        clearAuth(); window.location.href = '/ui/login';
+      } else {
+        flash(err.message, 'error');
+      }
+    }
+  }
+
+  loadDashboard();
+</script>
+{% endblock %}

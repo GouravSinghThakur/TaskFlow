@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Create Account — TaskFlow{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center">
+  <div class="w-full max-w-md fade-in">
+
+    <div class="text-center mb-8">
+      <div class="text-5xl mb-3">🚀</div>
+      <h1 class="text-2xl font-bold text-slate-800">Create your account</h1>
+      <p class="text-slate-500 mt-1 text-sm">Start managing tasks with your team today</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+      <form id="signup-form" novalidate>
+
+        <div class="mb-5">
+          <label for="name" class="block text-sm font-medium text-slate-700 mb-1.5">Full name</label>
+          <input id="name" type="text" name="name" required autocomplete="name"
+                 placeholder="Jane Doe"
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300
+                        focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand
+                        text-sm transition" />
+        </div>
+
+        <div class="mb-5">
+          <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+          <input id="email" type="email" name="email" required autocomplete="email"
+                 placeholder="you@example.com"
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300
+                        focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand
+                        text-sm transition" />
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+          <input id="password" type="password" name="password" required autocomplete="new-password"
+                 placeholder="••••••••"
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300
+                        focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand
+                        text-sm transition" />
+          <p class="text-xs text-slate-400 mt-1.5">Min 8 chars — uppercase, lowercase, digit &amp; special character.</p>
+        </div>
+
+        <div class="mb-6">
+          <label for="confirm" class="block text-sm font-medium text-slate-700 mb-1.5">Confirm password</label>
+          <input id="confirm" type="password" name="confirm" required autocomplete="new-password"
+                 placeholder="••••••••"
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300
+                        focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand
+                        text-sm transition" />
+        </div>
+
+        <button id="btn-submit" type="submit"
+                class="w-full bg-brand hover:bg-brand-dark text-white font-semibold
+                       py-2.5 rounded-lg transition text-sm flex items-center justify-center gap-2">
+          <span>Create account</span>
+          <svg id="spinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+        </button>
+
+        <div id="error-msg" class="hidden mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5"></div>
+
+      </form>
+    </div>
+
+    <p class="text-center text-sm text-slate-500 mt-5">
+      Already have an account?
+      <a href="/ui/login" class="text-brand hover:underline font-medium">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  redirectIfAuthed();
+
+  document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn      = document.getElementById('btn-submit');
+    const spinner  = document.getElementById('spinner');
+    const errorEl  = document.getElementById('error-msg');
+
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm  = document.getElementById('confirm').value;
+
+    errorEl.classList.add('hidden');
+
+    if (password !== confirm) {
+      errorEl.textContent = 'Passwords do not match.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    btn.disabled = true;
+    spinner.classList.remove('hidden');
+
+    try {
+      const data = await api('POST', '/api/auth/signup', { name, email, password });
+      setAuth(data.access_token, data.user);
+      flash('Account created! Welcome to TaskFlow 🎉');
+      window.location.href = '/ui/dashboard';
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.classList.remove('hidden');
+    } finally {
+      btn.disabled = false;
+      spinner.classList.add('hidden');
+    }
+  });
+</script>
+{% endblock %}
